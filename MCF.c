@@ -13,6 +13,60 @@
 #include <stddef.h>
 
 /**
+ * @brief Initializes MCF instance for TX only.
+ *
+ * Configures buffer, head and tail pointers, and size for transmission.
+ * No message parser is set.
+ */
+void MCF_init_TX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize)
+{
+	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) );
+
+	Instance->head = head;
+	Instance->tail = tail;
+	Instance->msgBuf = MsgBuf;
+	Instance->msgBufSize = BufSize;
+	*(Instance->head) = 0;
+}
+
+/**
+ * @brief Initializes MCF instance for RX only.
+ *
+ * Configures buffer, head and tail pointers, size, and sets parser callback
+ * for received message processing.
+ */
+void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf))
+{
+	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) && (NULL != msgParser));
+
+	Instance->head = head;
+	Instance->tail = tail;
+	Instance->msgBuf = MsgBuf;
+	Instance->msgBufSize = BufSize;
+	Instance->msgParser = msgParser;
+	*(Instance->tail) = 0;
+}
+
+/**
+ * @brief Initializes MCF instance for both RX and TX.
+ *
+ * Configures buffer, head and tail pointers, size, and sets parser callback.
+ * Intended for use when the same core sends and receives.
+ */
+void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf))
+{
+	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) && (NULL != msgParser));
+
+	Instance->head = head;
+	Instance->tail = tail;
+	Instance->msgBuf = MsgBuf;
+	Instance->msgBufSize = BufSize;
+	Instance->msgParser = msgParser;
+	*(Instance->tail) = 0;
+	*(Instance->head) = 0;
+}
+
+/**
  * @brief Sends a uint16_t message to the buffer.
  *
  * Inserts a 16-bit unsigned integer value with the given message ID

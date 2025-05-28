@@ -90,6 +90,51 @@ typedef struct{
 }MCF_t;
 
 /**
+ * @brief Initializes the MCF instance for transmission (TX) only.
+ *
+ * Sets up the circular buffer, head and tail pointers, and buffer size
+ * for transmitting messages. No parser function is assigned in this mode.
+ *
+ * @param Instance Pointer to the MCF instance to initialize.
+ * @param head     Pointer to the head index variable.
+ * @param tail     Pointer to the tail index variable.
+ * @param MsgBuf   Pointer to the message buffer array.
+ * @param BufSize  Size of the message buffer (number of messages).
+ */
+void MCF_init_TX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize);
+
+/**
+ * @brief Initializes the MCF instance for reception (RX) only.
+ *
+ * Sets up the circular buffer, head and tail pointers, buffer size,
+ * and assigns a message parser callback for processing received messages.
+ *
+ * @param Instance   Pointer to the MCF instance to initialize.
+ * @param head       Pointer to the head index variable.
+ * @param tail       Pointer to the tail index variable.
+ * @param MsgBuf     Pointer to the message buffer array.
+ * @param BufSize    Size of the message buffer (number of messages).
+ * @param msgParser  Callback function to parse received messages.
+ */
+void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf));
+
+/**
+ * @brief Initializes the MCF instance for both transmission (TX) and reception (RX).
+ *
+ * Sets up the circular buffer, head and tail pointers, buffer size,
+ * and assigns a message parser callback for processing received messages.
+ * Intended for use when the same core handles both sending and receiving.
+ *
+ * @param Instance   Pointer to the MCF instance to initialize.
+ * @param head       Pointer to the head index variable.
+ * @param tail       Pointer to the tail index variable.
+ * @param MsgBuf     Pointer to the message buffer array.
+ * @param BufSize    Size of the message buffer (number of messages).
+ * @param msgParser  Callback function to parse received messages.
+ */
+void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf));
+
+/**
  * @brief Sends a uint16_t message to the MCF queue.
  *
  * This function inserts a message with the given ID and 16-bit unsigned value
