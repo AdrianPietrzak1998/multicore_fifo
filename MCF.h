@@ -22,8 +22,9 @@
  *
  * The interpretation of the union contents depends on the message ID and the context of use.
  */
-typedef struct{
-	/** Message identifier, used to distinguish message types or destinations. */
+typedef struct
+{
+    /** Message identifier, used to distinguish message types or destinations. */
     uint16_t msgID;
 
     /**
@@ -32,14 +33,14 @@ typedef struct{
      * Only one of these fields is valid at a time. The sender and receiver must agree
      * on the type associated with a given msgID.
      */
-    union{
-        float    f32;  /**< 32-bit floating-point value. */
-        uint16_t u16;  /**< 16-bit unsigned integer. */
-        uint32_t u32;  /**< 32-bit unsigned integer. */
-        int16_t  i16;  /**< 16-bit signed integer. */
-        int32_t  i32;  /**< 32-bit signed integer. */
+    union {
+        float f32;    /**< 32-bit floating-point value. */
+        uint16_t u16; /**< 16-bit unsigned integer. */
+        uint32_t u32; /**< 32-bit unsigned integer. */
+        int16_t i16;  /**< 16-bit signed integer. */
+        int32_t i32;  /**< 32-bit signed integer. */
     };
-}MCF_Message_t;
+} MCF_Message_t;
 
 /**
  * @brief MCF queue instance for inter-core communication.
@@ -47,14 +48,15 @@ typedef struct{
  * This structure represents a single instance of the MCF (Multi-Core FIFO) message queue.
  * It encapsulates the buffer and state required for circular message handling between cores.
  */
-typedef struct{
+typedef struct
+{
     /**
      * @brief Pointer to the message buffer.
      *
      * This is a circular buffer containing messages exchanged between cores.
      * The buffer must be externally allocated and capable of holding `msgBufSize` elements.
      */
-	MCF_Message_t *msgBuf;
+    MCF_Message_t *msgBuf;
 
     /**
      * @brief Pointer to the head index.
@@ -62,7 +64,7 @@ typedef struct{
      * This index is incremented when new messages are inserted into the buffer.
      * It must be shared between cores and stored in a memory location visible to all participants.
      */
-	uint16_t *head;
+    uint16_t *head;
 
     /**
      * @brief Pointer to the tail index.
@@ -70,7 +72,7 @@ typedef struct{
      * This index is incremented when messages are read from the buffer.
      * Like the head, it must be stored in a shared memory location.
      */
-	uint16_t *tail;
+    uint16_t *tail;
 
     /**
      * @brief Size of the message buffer (in number of messages).
@@ -78,7 +80,7 @@ typedef struct{
      * Defines the capacity of the circular buffer. It must be greater than zero
      * and match the actual size of the allocated `msgBuf` array.
      */
-	uint16_t msgBufSize;
+    uint16_t msgBufSize;
 
     /**
      * @brief Callback for parsing or handling received messages.
@@ -86,8 +88,8 @@ typedef struct{
      * This function is invoked when a message is retrieved from the buffer.
      * It should implement logic specific to the message type, based on `msgID`.
      */
-	void (*msgParser)(MCF_Message_t *msgBuf);
-}MCF_t;
+    void (*msgParser)(MCF_Message_t *msgBuf);
+} MCF_t;
 
 /**
  * @brief Initializes the MCF instance for transmission (TX) only.
@@ -116,7 +118,8 @@ void MCF_init_TX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t 
  * @param BufSize    Size of the message buffer (number of messages).
  * @param msgParser  Callback function to parse received messages.
  */
-void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf));
+void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize,
+                 void (*msgParser)(MCF_Message_t *msgBuf));
 
 /**
  * @brief Initializes the MCF instance for both transmission (TX) and reception (RX).
@@ -132,7 +135,8 @@ void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t 
  * @param BufSize    Size of the message buffer (number of messages).
  * @param msgParser  Callback function to parse received messages.
  */
-void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf));
+void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize,
+                   void (*msgParser)(MCF_Message_t *msgBuf));
 
 /**
  * @brief Sends a uint16_t message to the MCF queue.
@@ -209,7 +213,5 @@ void MCF_send_f32(MCF_t *Instance, uint16_t msgID, float value);
  * @param Instance Pointer to the MCF queue instance.
  */
 void MCF_receive(MCF_t *Instance);
-
-
 
 #endif /* MULTICORE_FIFO_MCF_H_ */

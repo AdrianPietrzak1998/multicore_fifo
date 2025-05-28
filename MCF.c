@@ -20,13 +20,13 @@
  */
 void MCF_init_TX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize)
 {
-	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) );
+    assert((NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize));
 
-	Instance->head = head;
-	Instance->tail = tail;
-	Instance->msgBuf = MsgBuf;
-	Instance->msgBufSize = BufSize;
-	*(Instance->head) = 0;
+    Instance->head = head;
+    Instance->tail = tail;
+    Instance->msgBuf = MsgBuf;
+    Instance->msgBufSize = BufSize;
+    *(Instance->head) = 0;
 }
 
 /**
@@ -35,16 +35,18 @@ void MCF_init_TX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t 
  * Configures buffer, head and tail pointers, size, and sets parser callback
  * for received message processing.
  */
-void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf))
+void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize,
+                 void (*msgParser)(MCF_Message_t *msgBuf))
 {
-	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) && (NULL != msgParser));
+    assert((NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) &&
+           (NULL != msgParser));
 
-	Instance->head = head;
-	Instance->tail = tail;
-	Instance->msgBuf = MsgBuf;
-	Instance->msgBufSize = BufSize;
-	Instance->msgParser = msgParser;
-	*(Instance->tail) = 0;
+    Instance->head = head;
+    Instance->tail = tail;
+    Instance->msgBuf = MsgBuf;
+    Instance->msgBufSize = BufSize;
+    Instance->msgParser = msgParser;
+    *(Instance->tail) = 0;
 }
 
 /**
@@ -53,17 +55,19 @@ void MCF_init_RX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t 
  * Configures buffer, head and tail pointers, size, and sets parser callback.
  * Intended for use when the same core sends and receives.
  */
-void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize, void (*msgParser)(MCF_Message_t *msgBuf))
+void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_t *MsgBuf, uint16_t BufSize,
+                   void (*msgParser)(MCF_Message_t *msgBuf))
 {
-	assert( (NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) && (NULL != msgParser));
+    assert((NULL != Instance) && (NULL != head) && (NULL != tail) && (NULL != MsgBuf) && (0 < BufSize) &&
+           (NULL != msgParser));
 
-	Instance->head = head;
-	Instance->tail = tail;
-	Instance->msgBuf = MsgBuf;
-	Instance->msgBufSize = BufSize;
-	Instance->msgParser = msgParser;
-	*(Instance->tail) = 0;
-	*(Instance->head) = 0;
+    Instance->head = head;
+    Instance->tail = tail;
+    Instance->msgBuf = MsgBuf;
+    Instance->msgBufSize = BufSize;
+    Instance->msgParser = msgParser;
+    *(Instance->tail) = 0;
+    *(Instance->head) = 0;
 }
 
 /**
@@ -79,22 +83,22 @@ void MCF_init_RXTX(MCF_t *Instance, uint16_t *head, uint16_t *tail, MCF_Message_
 void MCF_send_u16(MCF_t *Instance, uint16_t msgID, uint16_t value)
 {
 
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	uint16_t head = *(Instance->head);
+    uint16_t head = *(Instance->head);
 
-	if(head >= Instance->msgBufSize - 1)
-	{
-		head = 0;
-	}
-	else
-	{
-		head++;
-	}
+    if (head >= Instance->msgBufSize - 1)
+    {
+        head = 0;
+    }
+    else
+    {
+        head++;
+    }
 
-	Instance->msgBuf[head].u16 = value;
-	Instance->msgBuf[head].msgID = msgID;
-	*(Instance->head) = head;
+    Instance->msgBuf[head].u16 = value;
+    Instance->msgBuf[head].msgID = msgID;
+    *(Instance->head) = head;
 }
 
 /**
@@ -109,22 +113,22 @@ void MCF_send_u16(MCF_t *Instance, uint16_t msgID, uint16_t value)
  */
 void MCF_send_i16(MCF_t *Instance, uint16_t msgID, int16_t value)
 {
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	uint16_t head = *(Instance->head);
+    uint16_t head = *(Instance->head);
 
-	if(head >= Instance->msgBufSize - 1)
-	{
-		head = 0;
-	}
-	else
-	{
-		head++;
-	}
+    if (head >= Instance->msgBufSize - 1)
+    {
+        head = 0;
+    }
+    else
+    {
+        head++;
+    }
 
-	Instance->msgBuf[head].i16 = value;
-	Instance->msgBuf[head].msgID = msgID;
-	*(Instance->head) = head;
+    Instance->msgBuf[head].i16 = value;
+    Instance->msgBuf[head].msgID = msgID;
+    *(Instance->head) = head;
 }
 
 /**
@@ -139,22 +143,22 @@ void MCF_send_i16(MCF_t *Instance, uint16_t msgID, int16_t value)
  */
 void MCF_send_u32(MCF_t *Instance, uint16_t msgID, uint32_t value)
 {
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	uint16_t head = *(Instance->head);
+    uint16_t head = *(Instance->head);
 
-	if(head >= Instance->msgBufSize - 1)
-	{
-		head = 0;
-	}
-	else
-	{
-		head++;
-	}
+    if (head >= Instance->msgBufSize - 1)
+    {
+        head = 0;
+    }
+    else
+    {
+        head++;
+    }
 
-	Instance->msgBuf[head].u32 = value;
-	Instance->msgBuf[head].msgID = msgID;
-	*(Instance->head) = head;
+    Instance->msgBuf[head].u32 = value;
+    Instance->msgBuf[head].msgID = msgID;
+    *(Instance->head) = head;
 }
 
 /**
@@ -169,22 +173,22 @@ void MCF_send_u32(MCF_t *Instance, uint16_t msgID, uint32_t value)
  */
 void MCF_send_i32(MCF_t *Instance, uint16_t msgID, int32_t value)
 {
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	uint16_t head = *(Instance->head);
+    uint16_t head = *(Instance->head);
 
-	if(head >= Instance->msgBufSize - 1)
-	{
-		head = 0;
-	}
-	else
-	{
-		head++;
-	}
+    if (head >= Instance->msgBufSize - 1)
+    {
+        head = 0;
+    }
+    else
+    {
+        head++;
+    }
 
-	Instance->msgBuf[head].i32 = value;
-	Instance->msgBuf[head].msgID = msgID;
-	*(Instance->head) = head;
+    Instance->msgBuf[head].i32 = value;
+    Instance->msgBuf[head].msgID = msgID;
+    *(Instance->head) = head;
 }
 
 /**
@@ -199,22 +203,22 @@ void MCF_send_i32(MCF_t *Instance, uint16_t msgID, int32_t value)
  */
 void MCF_send_f32(MCF_t *Instance, uint16_t msgID, float value)
 {
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	uint16_t head = *(Instance->head);
+    uint16_t head = *(Instance->head);
 
-	if(head >= Instance->msgBufSize - 1)
-	{
-		head = 0;
-	}
-	else
-	{
-		head++;
-	}
+    if (head >= Instance->msgBufSize - 1)
+    {
+        head = 0;
+    }
+    else
+    {
+        head++;
+    }
 
-	Instance->msgBuf[head].f32 = value;
-	Instance->msgBuf[head].msgID = msgID;
-	*(Instance->head) = head;
+    Instance->msgBuf[head].f32 = value;
+    Instance->msgBuf[head].msgID = msgID;
+    *(Instance->head) = head;
 }
 
 /**
@@ -230,15 +234,15 @@ void MCF_send_f32(MCF_t *Instance, uint16_t msgID, float value)
  */
 void MCF_receive(MCF_t *Instance)
 {
-	assert(Instance != NULL);
+    assert(Instance != NULL);
 
-	while(*(Instance->head) != *(Instance->tail))
-	{
-		(*(Instance->tail))++;
-		if(*(Instance->tail) >= Instance->msgBufSize)
-		{
-			*(Instance->tail) = 0;
-		}
-		Instance->msgParser(&(Instance->msgBuf[*(Instance->tail)]));
-	}
+    while (*(Instance->head) != *(Instance->tail))
+    {
+        (*(Instance->tail))++;
+        if (*(Instance->tail) >= Instance->msgBufSize)
+        {
+            *(Instance->tail) = 0;
+        }
+        Instance->msgParser(&(Instance->msgBuf[*(Instance->tail)]));
+    }
 }
