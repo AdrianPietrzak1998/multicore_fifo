@@ -17,28 +17,26 @@
  * @brief Message structure used in the MCF inter-core ring buffer.
  *
  * This structure represents a single message element that can be stored in the circular buffer.
- * It includes a message identifier and a payload, represented as a union of several common types.
- * The union allows for efficient transmission of a single value of a known type.
+ * It includes:
+ * - `msgID`: Message identifier, used to distinguish message types or destinations.
+ * - A union payload, which can represent a single value of one of several common types:
+ *   - `f32`: 32-bit floating-point value.
+ *   - `u16`: 16-bit unsigned integer.
+ *   - `u32`: 32-bit unsigned integer.
+ *   - `i16`: 16-bit signed integer.
+ *   - `i32`: 32-bit signed integer.
  *
  * The interpretation of the union contents depends on the message ID and the context of use.
  */
 typedef struct
 {
-    /** Message identifier, used to distinguish message types or destinations. */
     uint16_t msgID;
-
-    /**
-     * @brief Union of supported payload types.
-     *
-     * Only one of these fields is valid at a time. The sender and receiver must agree
-     * on the type associated with a given msgID.
-     */
     union {
-        float f32;    /**< 32-bit floating-point value. */
-        uint16_t u16; /**< 16-bit unsigned integer. */
-        uint32_t u32; /**< 32-bit unsigned integer. */
-        int16_t i16;  /**< 16-bit signed integer. */
-        int32_t i32;  /**< 32-bit signed integer. */
+        float f32;
+        uint16_t u16;
+        uint32_t u32;
+        int16_t i16;
+        int32_t i32;
     };
 } MCF_Message_t;
 
@@ -47,47 +45,19 @@ typedef struct
  *
  * This structure represents a single instance of the MCF (Multi-Core FIFO) message queue.
  * It encapsulates the buffer and state required for circular message handling between cores.
+ *
+ * - `msgBuf`: Pointer to the externally allocated circular buffer holding messages.
+ * - `head`: Pointer to the shared head index, incremented on message insertion.
+ * - `tail`: Pointer to the shared tail index, incremented on message retrieval.
+ * - `msgBufSize`: Size (capacity) of the circular message buffer (number of messages).
+ * - `msgParser`: Callback function to handle or parse messages when read.
  */
 typedef struct
 {
-    /**
-     * @brief Pointer to the message buffer.
-     *
-     * This is a circular buffer containing messages exchanged between cores.
-     * The buffer must be externally allocated and capable of holding `msgBufSize` elements.
-     */
     MCF_Message_t *msgBuf;
-
-    /**
-     * @brief Pointer to the head index.
-     *
-     * This index is incremented when new messages are inserted into the buffer.
-     * It must be shared between cores and stored in a memory location visible to all participants.
-     */
     uint16_t *head;
-
-    /**
-     * @brief Pointer to the tail index.
-     *
-     * This index is incremented when messages are read from the buffer.
-     * Like the head, it must be stored in a shared memory location.
-     */
     uint16_t *tail;
-
-    /**
-     * @brief Size of the message buffer (in number of messages).
-     *
-     * Defines the capacity of the circular buffer. It must be greater than zero
-     * and match the actual size of the allocated `msgBuf` array.
-     */
     uint16_t msgBufSize;
-
-    /**
-     * @brief Callback for parsing or handling received messages.
-     *
-     * This function is invoked when a message is retrieved from the buffer.
-     * It should implement logic specific to the message type, based on `msgID`.
-     */
     void (*msgParser)(MCF_Message_t *msgBuf);
 } MCF_t;
 
